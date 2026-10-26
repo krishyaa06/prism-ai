@@ -1,0 +1,18 @@
+nohup: ignoring input
+
+> prism-ai@0.1.0 dev
+> next dev --webpack --webpack
+
+▲ Next.js 16.4.3 (webpack)
+- Local:         http://localhost:3000
+- Network:       http://10.206.108.62:3000
+- Environments: .env.local
+✓ Ready in 1547ms
+✓ Running next.config.ts took 781ms
+  Skipping creating a lockfile at /data/data/com.termux/files/home/prism-ai/.next/dev/lock because we're using WASM bindings
+- Cache Components enabled
+- Partial Prefetching enabled
+
+○ Compiling /api/chat/route ...
+ POST /api/chat 500 in 23.0s (next.js: 394ms, application-code: 22.6s)
+ POST /api/chat 500 in 20.4s (next.js: 15ms, application-code: 20.4s)
