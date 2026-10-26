@@ -1,13 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   BrainCircuit,
   FileText,
-  Sparkles,
   ShieldCheck,
-  Layers3,
+  Sparkles,
 } from "lucide-react";
 
 const features = [
@@ -69,11 +69,18 @@ export default function Home() {
           </p>
 
           <div className="heroActions">
-            <button className="primaryButton">
+            <Link href="/dashboard" className="primaryButton">
               Explore Prism <ArrowRight size={17} />
-            </button>
+            </Link>
 
-            <button className="secondaryButton">View on GitHub</button>
+            <a
+              className="secondaryButton"
+              href="https://github.com/krishyaa06/prism-ai"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View on GitHub
+            </a>
           </div>
 
           <div className="trustLine">
@@ -156,9 +163,7 @@ export default function Home() {
                   <Icon size={20} />
                 </div>
 
-                <span className="featureNumber">
-                  0{index + 1}
-                </span>
+                <span className="featureNumber">0{index + 1}</span>
 
                 <h3>{feature.title}</h3>
                 <p>{feature.text}</p>
