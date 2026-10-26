@@ -48,3 +48,5 @@ node_modules/
 # logs & backups
 *.log
 *.backup.*
+
+!.env.example

@@ -4,7 +4,7 @@
 
 **Build. Explore. Create.**
 
-A developer-first AI workspace for organizing ideas, documents and research, with a built-in AI assistant.
+A developer-first AI workspace for documents, ideas and research, with a streaming AI assistant that works out of the box.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Open-6C63FF?style=for-the-badge&logo=vercel&logoColor=white)](https://prism-ai-umber.vercel.app)
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
@@ -16,11 +16,16 @@ A developer-first AI workspace for organizing ideas, documents and research, wit
 
 ## ✨ Features
 
-- **Animated landing page** with a modern dark developer aesthetic, built with Framer Motion
-- **Workspace dashboard** (`/dashboard`) with recent documents, saved ideas and a weekly focus score
-- **Prism AI Assistant**: ask questions straight from the dashboard, powered by the OpenAI API
-- **Secure by default**: the API key stays on the server inside a Next.js route handler
-- Responsive, mobile-friendly layout with `prefers-reduced-motion` support
+- **Workspace dashboard** with a live greeting, momentum score, recent documents, ideas and chats
+- **Markdown documents**: write / split / preview modes, tags, pins, autosave, copy and `.md` download
+- **AI Assistant** with streaming answers, chat history, stop, retry, regenerate and *Save as doc*
+- **Document context**: attach any document to a chat, or use *Ask AI → Summarize / Improve / Outline* from the editor
+- **Ideas**: quick capture, mark done, expand with AI or turn into a document
+- **Command palette** (`Ctrl/⌘ + K`) to search everything or ask Prism directly
+- **Multi-provider AI**: Groq, Gemini, OpenAI or OpenRouter, via server env vars *or* a key pasted in Settings
+- **Offline demo mode**: works with zero setup; rule-based summaries, ideas and plans when no key is set
+- **Your data, your browser**: everything is stored in `localStorage`, with JSON export / import and reset
+- Animated landing page, responsive mobile layout, custom 404 page and `prefers-reduced-motion` support
 
 ## 🛠️ Tech Stack
 
@@ -28,9 +33,9 @@ A developer-first AI workspace for organizing ideas, documents and research, wit
 |---|---|
 | Framework | Next.js 16 (App Router), React 19 |
 | Language | TypeScript |
-| Styling | Tailwind CSS 4 |
+| Styling | Hand-written CSS design system (dark, cyan/violet) |
 | Animation & icons | Framer Motion, Lucide React |
-| AI | OpenAI Responses API (`gpt-4.1-mini`) |
+| AI | OpenAI-compatible streaming Chat Completions (Groq, Gemini, OpenAI, OpenRouter) |
 | Hosting | Vercel |
 
 ## 🚀 Getting Started
@@ -39,7 +44,6 @@ A developer-first AI workspace for organizing ideas, documents and research, wit
 
 - Node.js 20+
 - npm
-- An [OpenAI API key](https://platform.openai.com/api-keys) (only needed for the assistant)
 
 ### Installation
 
@@ -47,25 +51,23 @@ A developer-first AI workspace for organizing ideas, documents and research, wit
 git clone https://github.com/krishyaa06/prism-ai.git
 cd prism-ai
 npm install
-```
-
-### Environment variables
-
-Create a `.env.local` file in the project root:
-
-```bash
-OPENAI_API_KEY=your_openai_api_key
-```
-
-> `.env*` files are git-ignored, so your key is never committed.
-
-### Run locally
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the landing page and [http://localhost:3000/dashboard](http://localhost:3000/dashboard) for the workspace.
+Open [http://localhost:3000](http://localhost:3000). The workspace is at [/dashboard](http://localhost:3000/dashboard).
+
+### Enable full AI answers (optional)
+
+Copy `.env.example` to `.env.local` and add **one** key:
+
+```bash
+GROQ_API_KEY=your_key        # free: https://console.groq.com/keys
+# or GEMINI_API_KEY=...      # free: https://aistudio.google.com/apikey
+# or OPENAI_API_KEY=...
+# or OPENROUTER_API_KEY=...
+```
+
+No key? Prism still works in **demo mode**. Users can also paste their own key in **Settings → AI provider**; it is stored only in their browser.
 
 ## 📜 Scripts
 
@@ -80,31 +82,47 @@ Open [http://localhost:3000](http://localhost:3000) for the landing page and [ht
 
 ```
 app/
-├── api/chat/route.ts   # POST /api/chat → OpenAI assistant endpoint
-├── dashboard/page.tsx  # Workspace dashboard
-├── layout.tsx          # Root layout and metadata
-├── page.tsx            # Animated landing page
-└── globals.css         # Global styles (Tailwind)
-public/                 # Static assets
+├── api/chat/route.ts          # Streaming AI endpoint (multi-provider + demo fallback)
+├── dashboard/
+│   ├── page.tsx               # /dashboard
+│   └── _components/           # workspace, overview, documents, assistant, ideas, settings, palette
+├── layout.tsx                 # Fonts, metadata, viewport
+├── page.tsx                   # Animated landing page
+├── not-found.tsx              # Custom 404
+├── icon.svg                   # Favicon
+└── globals.css                # Design system
+lib/
+├── ai.ts                      # Client streaming helper + AI actions
+├── demo.ts                    # Offline demo-mode replies
+├── markdown.tsx               # Safe Markdown renderer
+└── store.ts                   # localStorage state, seed data, helpers
 ```
 
 ## 🔌 API
 
-`POST /api/chat`
+`GET /api/chat` returns the server AI status:
 
 ```json
-{ "message": "Summarize the key ideas of retrieval-augmented generation" }
+{ "mode": "live", "provider": "Groq", "model": "llama-3.3-70b-versatile" }
 ```
 
-Response:
+`POST /api/chat` streams a plain-text answer:
 
 ```json
-{ "answer": "..." }
+{
+  "messages": [{ "role": "user", "content": "Explain RAG simply" }],
+  "context": "optional document text",
+  "provider": "groq",
+  "apiKey": "optional user key",
+  "model": "optional model id"
+}
 ```
+
+The response header `X-Prism-Mode` is `live` or `demo`.
 
 ## ☁️ Deployment
 
-Deploy to [Vercel](https://vercel.com/new) and add `OPENAI_API_KEY` under **Project → Settings → Environment Variables**.
+Push to GitHub and import the repo on [Vercel](https://vercel.com/new). To turn on full AI for every visitor, add `GROQ_API_KEY` (or another provider key) under **Project → Settings → Environment Variables** and redeploy.
 
 ## 🔷 Part of Prism Protocol
 
