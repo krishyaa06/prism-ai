@@ -44,3 +44,7 @@ next-env.d.ts
 .env.*.local
 node_modules/
 .next/
+
+# logs & backups
+*.log
+*.backup.*
