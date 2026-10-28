@@ -131,6 +131,7 @@ Thumbs.db
 
 # Prism web console
 web/node_modules/
+web/worker/node_modules/
 web/.next/
 web/out/
 web/.vercel/

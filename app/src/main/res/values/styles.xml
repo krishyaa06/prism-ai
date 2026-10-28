@@ -1,12 +1,21 @@
 <resources>
     <style name="Theme.PhoneAgentAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#00D4FF</item>
-        <item name="colorPrimaryVariant">#0097B2</item>
-        <item name="colorOnPrimary">#0F0C29</item>
-        <item name="colorSecondary">#302B63</item>
+        <item name="colorPrimary">@color/prism_accent</item>
+        <item name="colorPrimaryVariant">@color/prism_accent_dark</item>
+        <item name="colorOnPrimary">@color/prism_on_primary</item>
+        <item name="colorSecondary">@color/prism_accent_dark</item>
+        <item name="colorError">@color/prism_danger</item>
+        <item name="materialButtonStyle">@style/Widget.Prism.Button</item>
         <item name="android:fontFamily">sans</item>
-        <item name="android:statusBarColor">#0F0C29</item>
-        <item name="android:navigationBarColor">#0F0C29</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/prism_background</item>
+        <item name="android:navigationBarColor">@color/prism_background</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowBackground">@color/prism_background</item>
+    </style>
+
+    <style name="Widget.Prism.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">28dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">48dp</item>
     </style>
 </resources>

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 type Token = {
   id: string;
@@ -33,6 +35,8 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
   const [connectors, setConnectors] = useState<Connector[]>([]);
   const [connectorSecrets, setConnectorSecrets] = useState<Record<string, string>>({});
   const [modelConfigured, setModelConfigured] = useState(false);
+  const [modelSetupMessage, setModelSetupMessage] = useState("Model setup needed");
+  const [modelTestMessage, setModelTestMessage] = useState("");
   const [label, setLabel] = useState("Android phone");
   const [newToken, setNewToken] = useState("");
   const [message, setMessage] = useState("");
@@ -73,12 +77,40 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
     setJobs(body.jobs as AgentJob[]);
   }
 
+  async function testModelConnection() {
+    if (!window.confirm("This sends a short test prompt to your configured model provider and may use a small amount of provider credit. Continue?")) {
+      return;
+    }
+    setBusy(true);
+    setModelTestMessage("");
+    try {
+      const response = await fetch("/api/model/test", { method: "POST" });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error ?? "Model connection test failed.");
+      setModelTestMessage("Model connection succeeded. This confirms text access; test a supervised phone task to verify image input and worker processing.");
+    } catch (error) {
+      setModelTestMessage(error instanceof Error ? error.message : "Model connection test failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   useEffect(() => {
     void fetch("/api/health", { cache: "no-store" })
       .then(async (response) => {
         if (!response.ok) throw new Error("Could not check model gateway status.");
         const body = await response.json();
-        setModelConfigured(Boolean(body.modelEndpointConfigured));
+        const missingSettings = [
+          !body.modelEndpointConfigured && "model endpoint",
+          !body.modelNameConfigured && "model ID",
+          !body.modelApiKeyConfigured && "API key",
+        ].filter((setting): setting is string => Boolean(setting));
+        setModelConfigured(missingSettings.length === 0);
+        setModelSetupMessage(
+          missingSettings.length === 0
+            ? "Model configured"
+            : `Missing ${missingSettings.join(", ")}`,
+        );
       })
       .catch((error: unknown) =>
         setMessage(error instanceof Error ? error.message : "Could not check model gateway status."),
@@ -245,7 +277,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
     <div className="workspace">
       <aside className="workspace-sidebar">
         <a className="workspace-brand" href="/dashboard" aria-label="Prism home">
-          <span className="brand-mark">P</span>
+          <Image className="brand-logo" src="/prism-logo.png" alt="" width={40} height={40} />
           <span>Prism<small>PHONE AGENT</small></span>
         </a>
         <a className="new-task-link" href="#device">+ <span>New phone task</span></a>
@@ -269,7 +301,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
       <main className="dashboard">
       <header className="topbar">
         <div><p className="eyebrow">YOUR WORKSPACE</p><h1>Phone agent</h1></div>
-        <div className="account"><span className="connection-indicator"><span className="dot" />{modelConfigured ? "Model configured" : "Model setup needed"}</span><span>{isAdmin ? "ADMIN" : "ACCOUNT"}</span></div>
+        <div className="account"><span className="connection-indicator"><span className="dot" />{modelConfigured ? "Model configured" : modelSetupMessage}</span><span>{isAdmin ? "ADMIN" : "ACCOUNT"}</span><ThemeToggle /></div>
       </header>
 
       <section className="panel" id="overview">
@@ -277,9 +309,15 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
         <h2>Your Prism model endpoint</h2>
         <p>Connect an OpenAI-compatible vision model. Provider credentials stay server-side; they are never sent to the Android app.</p>
         <p className={modelConfigured ? "status" : "message"}>
-          <span className="dot" /> {modelConfigured ? "Model endpoint configured" : "Model endpoint not configured yet"}
+          <span className="dot" /> {modelConfigured ? "Model configuration present" : modelSetupMessage}
         </p>
-        <p className="fineprint">Expected API: OpenAI-compatible <code>POST /v1/chat/completions</code> with text and JPEG image input. Cloud tasks send approved screen context to your configured model host.</p>
+        {isAdmin && <div className="model-test-actions">
+          <button className="secondary" disabled={busy || !modelConfigured} onClick={() => void testModelConnection()}>
+            {busy ? "Testing…" : "Test model connection"}
+          </button>
+          {modelTestMessage && <p className={modelTestMessage.startsWith("Model connection succeeded") ? "status" : "message"} aria-live="polite">{modelTestMessage}</p>}
+        </div>}
+        <p className="fineprint">Set <code>PRISM_MODEL_ENDPOINT</code>, <code>PRISM_MODEL_NAME</code>, and <code>PRISM_MODEL_API_KEY</code> on this web deployment. Use an OpenAI-compatible <code>/chat/completions</code> endpoint with text and JPEG image input. Async phone tasks also need the worker running with the same model settings.</p>
       </section>
 
       <section className="panel" id="jobs">

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function PasswordResetForm() {
   const [password, setPassword] = useState("");
@@ -26,6 +28,13 @@ export function PasswordResetForm() {
 
   return (
     <main className="reset-shell">
+      <header className="reset-toolbar">
+        <a className="landing-brand" href="/" aria-label="Prism home">
+          <Image src="/prism-logo.png" alt="" width={42} height={42} />
+          <span>PRISM<small>PERSONAL DIGITAL WORKER</small></span>
+        </a>
+        <ThemeToggle />
+      </header>
       <section className="panel auth-panel">
         <p className="eyebrow">ACCOUNT SECURITY</p>
         <h1>Set a new password</h1>

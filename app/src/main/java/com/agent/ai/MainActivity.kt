@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         private const val MODEL_PATH_KEY = "model_path"
         private const val PROJECTOR_PATH_KEY = "projector_path"
         private const val CLOUD_BASE_URL_KEY = "cloud_base_url"
+        private const val DARK_THEME_KEY = "dark_theme"
         private const val MAX_TOOL_FILE_CHARACTERS = 2_000
 
         private var sharedLlamaBridge: LlamaBridge? = null
@@ -144,6 +146,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val savedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        AppCompatDelegate.setDefaultNightMode(
+            if (savedPreferences.getBoolean(DARK_THEME_KEY, true)) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            },
+        )
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -165,6 +175,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
+        val preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        binding.switchTheme.isChecked = preferences.getBoolean(DARK_THEME_KEY, true)
+        binding.switchTheme.text = if (binding.switchTheme.isChecked) "Dark mode" else "Light mode"
+        binding.switchTheme.setOnCheckedChangeListener { _, darkMode ->
+            preferences.edit().putBoolean(DARK_THEME_KEY, darkMode).apply()
+            binding.switchTheme.text = if (darkMode) "Dark mode" else "Light mode"
+            AppCompatDelegate.setDefaultNightMode(
+                if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO,
+            )
+        }
         binding.rgInferenceProvider.setOnCheckedChangeListener { _, _ -> updateProviderFields() }
         binding.etCloudUrl.addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit

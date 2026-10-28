@@ -32,8 +32,10 @@ approved phone actions.
 - **Persistent memory:** local and cloud memory paths require explicit
   opt-in; cloud memories can be reviewed and deleted in the dashboard.
 
-The web dashboard uses an original Prism workspace layout. It is not a copy of
-ChatGPT's branding, source, or assets.
+The web dashboard and Android app share Prism's logo and a dark-first,
+Material-inspired palette with a light/dark theme option. The layout is an
+original Prism design informed by task-focused AI workspaces; it does not copy
+Perplexity or ChatGPT branding, source, or assets.
 
 ## Requirements
 
@@ -53,6 +55,19 @@ behavior, permissions, and current Play policy before publishing.
 4. Grant screen-capture permission when prompted.
 5. Select the local model or configured Prism Cloud, enter a task, inspect and
    approve the proposed plan, then supervise the phone actions.
+
+### Start the local web console
+
+Create `web/.env.local` with the public Supabase project URL and publishable
+key. From PowerShell, run `powershell.exe -NoProfile -ExecutionPolicy Bypass
+-File ".\start-local.ps1"` in the `web` directory. The launcher prompts for
+the Supabase service-role key and OpenRouter API key without writing them to a
+file, then starts the local dashboard with the OpenRouter endpoint and model
+defaults. Keep this terminal open while using the console. Async Android cloud
+tasks also need the separate `web/worker/start-local.ps1` process running.
+The dashboard's admin-only **Test model connection** button makes a short text
+request to the configured provider; a successful text test does not by itself
+verify image input or the Android queue/worker path.
 
 You can stop a running action from the app. Accessibility and screen-capture
 permissions are powerful: the service can read visible UI text and dispatch

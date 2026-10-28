@@ -1,0 +1,17 @@
+<resources>
+    <color name="prism_background">#121212</color>
+    <color name="prism_surface">#1E1E1E</color>
+    <color name="prism_surface_variant">#2C2C2C</color>
+    <color name="prism_stroke">#938F99</color>
+    <color name="prism_text">#E6E1E5</color>
+    <color name="prism_muted">#CAC4D0</color>
+    <color name="prism_muted_strong">#CAC4D0</color>
+    <color name="prism_hint">#938F99</color>
+    <color name="prism_accent">#D0BCFF</color>
+    <color name="prism_accent_dark">#D0BCFF</color>
+    <color name="prism_on_primary">#381E72</color>
+    <color name="prism_danger">#F2B8B5</color>
+    <color name="prism_success">#A8DAB5</color>
+    <color name="prism_warning">#FFD86F</color>
+    <color name="prism_secondary_container">#4A4458</color>
+</resources>

@@ -1,13 +1,21 @@
 import { redirect } from "next/navigation";
 import { getVerifiedUser } from "@/lib/auth";
 import { AuthPanel } from "@/components/auth-panel";
+import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function HomePage() {
   if (await getVerifiedUser()) redirect("/dashboard");
   return (
-    <main className="shell">
+    <main className="shell landing-shell">
+      <div className="landing-toolbar">
+        <a className="landing-brand" href="/" aria-label="Prism home">
+          <Image src="/prism-logo.png" alt="" width={46} height={46} priority />
+          <span>PRISM<small>PERSONAL DIGITAL WORKER</small></span>
+        </a>
+        <ThemeToggle />
+      </div>
       <section className="hero">
-        <p className="eyebrow">PRISM • PERSONAL DIGITAL WORKER</p>
         <h1>Your AI.<br />Your tools.<br /><span>Your control.</span></h1>
         <p className="intro">
           Connect your own model endpoint. Prism plans multi-step tasks in the cloud

@@ -10,6 +10,10 @@ export function AuthPanel() {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const siteOrigin =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "https://web-ten-ruby-10.vercel.app");
+
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
@@ -21,14 +25,14 @@ export function AuthPanel() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+            emailRedirectTo: `${siteOrigin}/auth/callback?next=/dashboard`,
           },
         });
         if (error) throw error;
         setMessage("Check your email to verify your account and continue to Prism.");
       } else if (mode === "reset") {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+          redirectTo: `${siteOrigin}/auth/callback?next=/reset-password`,
         });
         if (error) throw error;
         setMessage("If that account exists, a password-reset link has been sent.");

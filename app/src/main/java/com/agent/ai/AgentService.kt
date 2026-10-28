@@ -2,6 +2,8 @@ package com.agent.ai
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.graphics.Path
 import android.graphics.Rect
 import android.os.Bundle
@@ -132,11 +134,32 @@ class AgentService : AccessibilityService() {
      * Paste text using clipboard (more reliable in some apps)
      */
     fun pasteText(text: String): Boolean {
-        // First try set text
         if (typeText(text)) return true
 
-        // Fallback: focus + paste is more complex, keep simple for now
-        return false
+        val root = rootInActiveWindow ?: return false
+        val focused = findFocusedNode(root) ?: return false
+        if (!focused.isEditable || !focused.isEnabled) return false
+
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val previousClip = clipboard.primaryClip
+        var pasted = false
+        try {
+            clipboard.setPrimaryClip(ClipData.newPlainText("Prism text", text))
+            pasted = focused.performAction(AccessibilityNodeInfo.ACTION_PASTE)
+        } catch (e: RuntimeException) {
+            Log.w(TAG, "Clipboard-assisted text entry failed", e)
+        } finally {
+            try {
+                if (previousClip != null) {
+                    clipboard.setPrimaryClip(previousClip)
+                } else {
+                    clipboard.clearPrimaryClip()
+                }
+            } catch (restoreError: RuntimeException) {
+                Log.e(TAG, "Could not restore the previous clipboard contents", restoreError)
+            }
+        }
+        return pasted
     }
 
     /**

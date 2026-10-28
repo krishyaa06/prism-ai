@@ -4,10 +4,13 @@ type ModelMessage = {
   content: string | Array<{ type: string; text?: string; image_url?: { url: string } }>;
 };
 
-function getRoleEndpoint(role: ModelRole) {
-  const raw = process.env[`PRISM_MODEL_${role.toUpperCase()}_ENDPOINT`] ?? process.env.PRISM_MODEL_ENDPOINT;
-  if (!raw) throw new Error(`Prism ${role} model endpoint is not configured.`);
-  const endpoint = new URL(raw);
+export function resolveModelEndpoint(raw: string, role: ModelRole) {
+  let endpoint: URL;
+  try {
+    endpoint = new URL(raw);
+  } catch {
+    throw new Error(`Prism ${role} model endpoint is invalid.`);
+  }
   const localHost = ["localhost", "127.0.0.1"].includes(endpoint.hostname);
   if (endpoint.protocol !== "https:" &&
     !(process.env.NODE_ENV !== "production" && localHost && endpoint.protocol === "http:")) {
@@ -16,11 +19,23 @@ function getRoleEndpoint(role: ModelRole) {
   if (endpoint.username || endpoint.password || endpoint.search || endpoint.hash) {
     throw new Error(`Prism ${role} endpoint URL must not embed credentials or query parameters.`);
   }
+  const path = endpoint.pathname.replace(/\/+$/, "");
+  if (!path.endsWith("/chat/completions")) {
+    endpoint.pathname = `${path}/chat/completions`;
+  } else {
+    endpoint.pathname = path;
+  }
   return endpoint;
 }
 
+function getRoleEndpoint(role: ModelRole) {
+  const raw = process.env[`PRISM_MODEL_${role.toUpperCase()}_ENDPOINT`] || process.env.PRISM_MODEL_ENDPOINT;
+  if (!raw) throw new Error(`Prism ${role} model endpoint is not configured.`);
+  return resolveModelEndpoint(raw, role);
+}
+
 function getRoleValue(role: ModelRole, suffix: "NAME" | "API_KEY", fallback?: string) {
-  return process.env[`PRISM_MODEL_${role.toUpperCase()}_${suffix}`] ?? fallback;
+  return process.env[`PRISM_MODEL_${role.toUpperCase()}_${suffix}`] || fallback;
 }
 
 export async function callModel(

@@ -168,6 +168,11 @@ class AgentLoop(
                 } else {
                     val executed = executeAction(service, action)
                     if (!executed) {
+                        if (action.type == ActionType.TYPE) {
+                            throw IllegalStateException(
+                                "Could not enter text in the focused field; no text was entered."
+                            )
+                        }
                         onLog("Action could not be dispatched; checking the updated screen.")
                     }
                 }
@@ -254,7 +259,7 @@ class AgentLoop(
                 action.x2 * width,
                 action.y2 * height
             )
-            ActionType.TYPE -> service.typeText(action.text)
+            ActionType.TYPE -> service.pasteText(action.text)
             ActionType.BACK -> service.pressBack()
             ActionType.HOME -> service.pressHome()
             ActionType.WAIT, ActionType.DONE -> true
@@ -288,7 +293,7 @@ class AgentLoop(
             ActionType.SWIPE ->
                 "swipe from (${(x * 100).toInt()}%, ${(y * 100).toInt()}%) " +
                     "to (${(x2 * 100).toInt()}%, ${(y2 * 100).toInt()}%)"
-            ActionType.TYPE -> "type: \"${text.replace("\n", "\\n").replace("\r", "\\r")}\""
+            ActionType.TYPE -> "type ${text.length} characters"
             ActionType.BACK -> "press Back"
             ActionType.HOME -> "press Home"
             ActionType.WAIT -> "wait"

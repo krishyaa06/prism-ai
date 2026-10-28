@@ -1,9 +1,15 @@
 import { pathToFileURL } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 
-const required = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "PRISM_MODEL_ENDPOINT"];
+const required = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"];
 for (const name of required) {
   if (!process.env[name]) throw new Error(`Missing worker environment variable: ${name}`);
+}
+
+const modelRoles = ["PLANNER", "EXECUTOR", "RESEARCH", "REVIEW"];
+if (!process.env.PRISM_MODEL_ENDPOINT &&
+    !modelRoles.some((role) => process.env[`PRISM_MODEL_${role}_ENDPOINT`])) {
+  throw new Error("Missing worker model endpoint: configure PRISM_MODEL_ENDPOINT or a role-specific endpoint.");
 }
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
@@ -51,11 +57,11 @@ export function isRetryableStatus(status) {
   return status === 408 || status === 429 || status >= 500;
 }
 
-function endpointFor(role) {
+export function endpointFor(role) {
   let endpoint;
   try {
     endpoint = new URL(
-      process.env[`PRISM_MODEL_${role.toUpperCase()}_ENDPOINT`] ?? process.env.PRISM_MODEL_ENDPOINT,
+      process.env[`PRISM_MODEL_${role.toUpperCase()}_ENDPOINT`] || process.env.PRISM_MODEL_ENDPOINT,
     );
   } catch {
     throw new ModelRequestError(`${role} model endpoint is invalid.`, false);
@@ -67,11 +73,15 @@ function endpointFor(role) {
   if (endpoint.username || endpoint.password || endpoint.search || endpoint.hash) {
     throw new ModelRequestError(`${role} model endpoint cannot contain credentials, query, or fragment.`, false);
   }
+  const path = endpoint.pathname.replace(/\/+$/, "");
+  endpoint.pathname = path.endsWith("/chat/completions")
+    ? path
+    : `${path}/chat/completions`;
   return endpoint;
 }
 
 async function callModel(role, prompt, screenshotBase64, maxTokens = 512, signal) {
-  const apiKey = process.env[`PRISM_MODEL_${role.toUpperCase()}_API_KEY`] ?? process.env.PRISM_MODEL_API_KEY;
+  const apiKey = process.env[`PRISM_MODEL_${role.toUpperCase()}_API_KEY`] || process.env.PRISM_MODEL_API_KEY;
   let response;
   try {
     response = await fetch(endpointFor(role), {
@@ -82,8 +92,8 @@ async function callModel(role, prompt, screenshotBase64, maxTokens = 512, signal
       },
       body: JSON.stringify({
         model:
-          process.env[`PRISM_MODEL_${role.toUpperCase()}_NAME`] ??
-          process.env.PRISM_MODEL_NAME ??
+          process.env[`PRISM_MODEL_${role.toUpperCase()}_NAME`] ||
+          process.env.PRISM_MODEL_NAME ||
           "prism",
         messages: [
           {
