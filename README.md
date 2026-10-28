@@ -118,12 +118,18 @@ Install Node.js 22+, then from PowerShell run:
 .\start-local.ps1
 ```
 
-The script prompts for the Supabase project URL, model endpoint, and model ID.
-Service-role and model-provider keys are entered as secure prompts and are not
-written to a `.env` file. They exist in the worker process environment while it
-runs. Keep the computer awake and the process running; closing PowerShell,
-sleeping the PC, or losing connectivity pauses cloud tasks. This is a
-development/temporary option, not an always-on production deployment.
+The script prompts for the Supabase project URL, shared model settings, and
+optional planner/executor/research/review model settings. Service-role and
+model-provider keys are entered as secure prompts and are not written to a
+`.env` file. They exist in the worker process environment while it runs. Keep
+the computer awake and the process running; closing PowerShell, sleeping the
+PC, or losing connectivity pauses cloud tasks. This is a development/temporary
+option, not an always-on production deployment. If Windows blocks script
+execution, run it in a process-scoped policy bypass:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File ".\start-local.ps1"
+```
 
 ## Project layout
 
