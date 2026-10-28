@@ -1,15 +1,19 @@
 # Prism Privacy Notice — Draft for Review
 
-**Status:** Draft, not legal advice. This notice must be checked against the
-actual production deployment, vendors, retention settings, and applicable law
-before public launch. Last updated: 27 October 2026.
+**Status:** India-focused draft for review; not legal advice and not ready as a
+final public privacy notice. Verify the operator's legal identity, actual
+vendors, hosting regions, retention settings, grievance contact, and
+applicable Indian requirements with qualified counsel before launch. Last
+updated: 28 October 2026.
 
 ## Who operates Prism
 
-Prism Protocol is currently an unregistered, individually maintained project;
-it is not a company or registered legal entity. Contact for this project:
-**prismprotocol.support@gmail.com**. Do not use this draft as proof of
-incorporation, regulatory approval, or a registered business address.
+The project brand supplied by the maintainer is **PRISM PROTOCOL**. The
+maintainer supplied **prismprotocol.support@gmail.com** as a contact address.
+The legal operator's full name, entity type, registration status, and service
+address have not been independently verified and must be completed before
+public launch. This draft does not claim that PRISM PROTOCOL is incorporated
+or registered.
 
 ## Data Prism may process
 
@@ -21,6 +25,8 @@ Depending on the features a person chooses to use, Prism may process:
   display prefix, creation time, last use, expiry, and revocation state.
 - Task prompts, generated plans/actions, screenshots, and bounded Android
   Accessibility text when the person selects Prism Cloud and confirms a task.
+  Async queue payloads are processed by the Prism worker; the configured
+  model provider receives the prompt and screenshot for inference.
 - Android contact, calendar, notification, and selected text-file data only
   when the person uses the corresponding device feature and grants applicable
   Android permission or document access.
@@ -76,10 +82,14 @@ database, or model host. Task screenshots are sent only in cloud mode after
 confirmation, but cloud inference providers and infrastructure may process
 them transiently.
 
-Account data is retained while an account is active. API tokens are retained
-until revoked or account deletion. Memories are retained until the person
-deletes them or deletes their account. Request data/log retention must be set
-and verified with each deployment vendor before launch.
+The async queue is configured to expire jobs after up to 30 minutes. Prompt
+and screenshot fields are cleared when a job reaches a terminal state; job
+status metadata may remain for up to seven days before the worker's cleanup
+pass. This is an application-level target, not a guarantee of immediate
+deletion from provider logs, backups, or the model provider. Memories are
+retained until the person deletes them or their account. Account data remains
+while an account is active. Vendor-specific log and backup retention must be
+checked in the actual deployment settings before launch.
 
 ## Children and sensitive data
 
@@ -93,5 +103,7 @@ be configured only after legal review.
 ## Changes and contact
 
 This draft will need updating when the model host, connectors, or retention
-settings change. Privacy questions or deletion requests:
+settings change. The India-specific legal basis, grievance process, and
+applicable user-rights workflow remain to be confirmed with counsel. Privacy
+questions or deletion requests:
 **prismprotocol.support@gmail.com**.

@@ -17,16 +17,21 @@ best-effort process, not a guaranteed response SLA or bug-bounty program.
   stores. Never expose them to client bundles, Android, or Git.
 - Require HTTPS for production endpoints; rotate exposed credentials.
 - Apply Supabase migrations and verify RLS and service-role boundaries.
-- Limit connector scopes, allowed server endpoints, task duration, request
-  size, and per-user rate.
+- Limit connector scopes, operator-approved MCP server endpoints, task
+  duration, request size, and per-user rate. Only deployment-configured
+  connectors are available; the repository does not contain a ready-to-use
+  150+ connector catalog.
 - Do not execute model-produced shell, JavaScript, SQL, or arbitrary code.
-- Use a separate hardened worker/sandbox for untrusted code or long-running
-  tasks; Vercel API functions are not a general-purpose sandbox.
+- The Docker worker runs model inference and queue processing with a non-root
+  account and reduced container privileges. It is not an arbitrary
+  code-execution sandbox and must not run model-generated shell or code.
+- The local PowerShell worker launcher stores no secret file, but secrets are
+  present in that local process environment while the worker is running.
 - Monitor vendor access logs and define retention before accepting real data.
 
 ## Current limitation
 
-This repository's model gateway does not itself provide a production
-container-isolation boundary for arbitrary code. Do not expose code execution
-or arbitrary connector endpoints as if sandboxed until a separately reviewed
-worker is deployed and tested.
+The worker and its container hardening have not been deployed or verified in a
+production environment. Do not describe the service as a secure sandbox for
+arbitrary code. A worker host, secrets, access controls, and a deployment
+smoke test are still required.

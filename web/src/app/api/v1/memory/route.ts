@@ -74,18 +74,14 @@ export async function DELETE(request: Request) {
   if (!owner) return NextResponse.json({ error: "A valid Prism API token is required." }, { status: 401 });
 
   const memoryId = new URL(request.url).searchParams.get("id");
-  if (!memoryId || !z.string().uuid().safeParse(memoryId).success) {
+  if (!memoryId || (memoryId !== "all" && !z.string().uuid().safeParse(memoryId).success)) {
     return NextResponse.json({ error: "Provide a valid memory id or id=all." }, { status: 400 });
   }
   const supabase = createSupabaseAdminClient();
-  const { data, error } = await supabase
-    .from("agent_memories")
-    .delete()
-    .eq("user_id", owner.userId)
-    .eq("id", memoryId)
-    .select("id")
-    .maybeSingle();
+  let query = supabase.from("agent_memories").delete().eq("user_id", owner.userId);
+  if (memoryId !== "all") query = query.eq("id", memoryId);
+  const { data, error } = await query.select("id");
   if (error) return NextResponse.json({ error: "Could not delete Prism memory." }, { status: 500 });
-  if (!data) return NextResponse.json({ error: "Memory not found." }, { status: 404 });
-  return NextResponse.json({ deleted: true });
+  if (memoryId !== "all" && !data?.length) return NextResponse.json({ error: "Memory not found." }, { status: 404 });
+  return NextResponse.json({ deleted: true, count: data?.length ?? 0 });
 }

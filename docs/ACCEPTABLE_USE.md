@@ -1,4 +1,8 @@
-# Prism Acceptable Use Policy — Draft
+# Prism Acceptable Use Policy — India-focused draft
+
+This draft is not legal advice. Confirm the legal operator's identity,
+complaint/grievance process, and applicable Indian requirements with qualified
+counsel before public launch. Contact: **prismprotocol.support@gmail.com**.
 
 Prism is intended for tasks on devices and accounts that the user owns or is
 authorized to operate. Users must:

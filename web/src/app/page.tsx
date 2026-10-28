@@ -19,6 +19,12 @@ export default async function HomePage() {
         </div>
       </section>
       <AuthPanel />
+      <footer className="legal-footer">
+        <a href="https://github.com/krishyaa06/prism-ai/blob/main/docs/PRIVACY.md">Privacy draft</a>
+        <a href="https://github.com/krishyaa06/prism-ai/blob/main/docs/TERMS.md">Terms draft</a>
+        <a href="https://github.com/krishyaa06/prism-ai/blob/main/docs/ACCEPTABLE_USE.md">Acceptable use</a>
+        <span>Drafts only; review with qualified counsel before launch.</span>
+      </footer>
     </main>
   );
 }

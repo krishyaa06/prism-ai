@@ -1,24 +1,25 @@
 # Prism Terms of Use — Draft for Review
 
-**Status:** Draft only; not legal advice and not ready for public acceptance.
-The operator must obtain qualified legal review and have an adult legally
-responsible operator review this document before launching public accounts.
-Last updated: 27 October 2026.
+**Status:** India-focused draft only; not legal advice and not ready for public
+acceptance. Verify the legal operator's identity and obtain qualified Indian
+legal review before launching public accounts. Last updated: 28 October 2026.
 
 ## 1. Operator and service status
 
-Prism Protocol is an unregistered, individually maintained software project,
-not an incorporated company. It is not a bank, professional adviser,
-emergency-response service, or guaranteed autonomous worker. The project
-contact is **prismprotocol.support@gmail.com**.
+The project brand supplied by the maintainer is **PRISM PROTOCOL**. The legal
+operator's full name, entity type, and registration status have not been
+independently verified; complete those details before publication. It is not a
+bank, professional adviser, emergency-response service, or guaranteed
+autonomous worker. The supplied project contact is
+**prismprotocol.support@gmail.com**.
 
 ## 2. Eligibility and authority
 
 Use Prism only if you are legally able to agree to applicable terms in your
-location. If you are not an adult, a parent or legal guardian must review and
-supervise your use where permitted by law. A public service operated by a minor
-must not be launched or monetized without an adult legally responsible
-operator and appropriate advice.
+location. If you are not legally able to agree, do not use the service without
+the legally required parent or guardian involvement. The operator must confirm
+age and eligibility requirements with Indian counsel before opening public
+signup.
 
 You must own or be authorized to control each device, account, file, calendar,
 contact list, notification, and connector you use. You are responsible for
@@ -79,10 +80,11 @@ excluded. These limitations require jurisdiction-specific legal review.
 
 ## 9. Governing law and disputes
 
-The operator is based in Maharashtra, India. The governing-law, venue,
-consumer-protection, privacy, and dispute-resolution language must be finalized
-by qualified counsel before launch. This draft intentionally does not purport
-to waive mandatory rights or establish a binding forum.
+India is the intended primary jurisdiction for this draft. The operator's
+state/address, governing-law wording, venue, consumer-protection disclosures,
+grievance process, and dispute-resolution terms must be finalized by qualified
+Indian counsel. Nothing here purports to waive mandatory rights or establish
+a binding forum.
 
 ## 10. Contact
 

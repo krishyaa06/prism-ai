@@ -11,6 +11,30 @@ approved phone actions.
 > service operation requires separately configured Supabase, model, and worker
 > deployments.
 
+## Feature readiness (28 October 2026)
+
+- **Model orchestration:** planner, executor, research, and review roles are
+  supported. Role-specific model endpoints, names, and API keys are optional;
+  unset roles fall back to the shared model configuration.
+- **Parallel sub-agents:** planning runs read-only research and safety-review
+  calls in parallel. They do not operate the phone or independently execute
+  tasks.
+- **Connectors:** the dashboard supports deployment-approved Streamable HTTP
+  MCP servers configured by the operator. This repository does **not** ship a
+  150+ ready-to-connect catalog. Connector authentication and service
+  permissions must be configured and tested per service.
+- **Worker isolation:** Docker Compose applies container hardening to the
+  asynchronous inference worker. It is not a general-purpose sandbox for
+  executing arbitrary model-generated code.
+- **Asynchronous jobs:** queue, retry, cancellation, and cleanup logic are
+  implemented. Live cloud jobs still require a continuously running worker
+  and a configured model provider.
+- **Persistent memory:** local and cloud memory paths require explicit
+  opt-in; cloud memories can be reviewed and deleted in the dashboard.
+
+The web dashboard uses an original Prism workspace layout. It is not a copy of
+ChatGPT's branding, source, or assets.
+
 ## Requirements
 
 - Android Studio with Android SDK 34 and NDK/CMake support
@@ -85,6 +109,21 @@ docker compose logs -f prism-worker
 
 Keep `.env` private. Docker Compose validation and live Supabase/model
 integration tests require a configured deployment.
+
+### Run the worker on Windows without Docker
+
+Install Node.js 22+, then from PowerShell run:
+
+```powershell
+.\start-local.ps1
+```
+
+The script prompts for the Supabase project URL, model endpoint, and model ID.
+Service-role and model-provider keys are entered as secure prompts and are not
+written to a `.env` file. They exist in the worker process environment while it
+runs. Keep the computer awake and the process running; closing PowerShell,
+sleeping the PC, or losing connectivity pauses cloud tasks. This is a
+development/temporary option, not an always-on production deployment.
 
 ## Project layout
 

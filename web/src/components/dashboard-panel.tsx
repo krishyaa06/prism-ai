@@ -242,23 +242,47 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
   }
 
   return (
-    <main className="dashboard">
+    <div className="workspace">
+      <aside className="workspace-sidebar">
+        <a className="workspace-brand" href="/dashboard" aria-label="Prism home">
+          <span className="brand-mark">P</span>
+          <span>Prism<small>PHONE AGENT</small></span>
+        </a>
+        <a className="new-task-link" href="#device">+ <span>New phone task</span></a>
+        <p className="sidebar-label">WORKSPACE</p>
+        <nav className="workspace-nav" aria-label="Workspace">
+          <a href="#overview"><span>Overview</span></a>
+          <a href="#jobs"><span>Task history</span></a>
+          <a href="#connectors"><span>Connectors</span><small>{connectors.length}</small></a>
+          <a href="#memory"><span>Memory</span></a>
+          <a href="#device"><span>Android device</span></a>
+          {isAdmin && <a href="#accounts"><span>Accounts</span></a>}
+        </nav>
+        <div className="sidebar-bottom">
+          <a href="https://github.com/krishyaa06/prism-ai/blob/main/docs/PRIVACY.md">Privacy draft</a>
+          <a href="https://github.com/krishyaa06/prism-ai/blob/main/docs/TERMS.md">Terms draft</a>
+          <span className="sidebar-account">{email}</span>
+          <button className="secondary" onClick={signOut}>Sign out</button>
+        </div>
+      </aside>
+
+      <main className="dashboard">
       <header className="topbar">
-        <div><p className="eyebrow">PRISM CONTROL ROOM</p><h1>Digital Worker</h1></div>
-        <div className="account"><span>{email}{isAdmin ? " • ADMIN" : ""}</span><button className="secondary" onClick={signOut}>Sign out</button></div>
+        <div><p className="eyebrow">YOUR WORKSPACE</p><h1>Phone agent</h1></div>
+        <div className="account"><span className="connection-indicator"><span className="dot" />{modelConfigured ? "Model configured" : "Model setup needed"}</span><span>{isAdmin ? "ADMIN" : "ACCOUNT"}</span></div>
       </header>
 
-      <section className="panel">
+      <section className="panel" id="overview">
         <p className="eyebrow">MODEL CONNECTION</p>
         <h2>Your Prism model endpoint</h2>
-        <p>Set <code>PRISM_MODEL_ENDPOINT</code>, <code>PRISM_MODEL_NAME</code>, and optional <code>PRISM_MODEL_API_KEY</code> as Vercel server environment variables. The Android app never receives the model server secret.</p>
+        <p>Connect an OpenAI-compatible vision model. Provider credentials stay server-side; they are never sent to the Android app.</p>
         <p className={modelConfigured ? "status" : "message"}>
           <span className="dot" /> {modelConfigured ? "Model endpoint configured" : "Model endpoint not configured yet"}
         </p>
-        <p className="fineprint">Expected API: OpenAI-compatible <code>POST /v1/chat/completions</code> with text + JPEG image input. Model requests may include task text, screenshots, visible UI text, and selected local tool results.</p>
+        <p className="fineprint">Expected API: OpenAI-compatible <code>POST /v1/chat/completions</code> with text and JPEG image input. Cloud tasks send approved screen context to your configured model host.</p>
       </section>
 
-      <section className="panel">
+      <section className="panel" id="jobs">
         <p className="eyebrow">ASYNC TASKS</p>
         <h2>Recent model jobs</h2>
         <p>Shows the latest 50 model-inference jobs. Queued jobs cancel immediately; cancellation of a running model request is sent to the worker and normally takes effect at its next heartbeat.</p>
@@ -277,7 +301,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
         </div>
       </section>
 
-      <section className="panel">
+      <section className="panel" id="connectors">
         <p className="eyebrow">MCP CONNECTORS</p>
         <h2>Connected services</h2>
         <p>Prism can load tools from deployment-approved Streamable HTTP MCP servers. The catalog is configured by the service operator; each service may require its own bearer credential and permissions. Credentials are encrypted server-side. Connect only servers you trust.</p>
@@ -306,7 +330,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
         </div>
       </section>
 
-      <section className="panel">
+      <section className="panel" id="memory">
         <p className="eyebrow">PERSISTENT MEMORY</p>
         <h2>Your Prism memories</h2>
         <p>Memory is saved only when you opt in for a task in the Android app. These entries are private to your account. Delete individual entries or clear everything.</p>
@@ -320,7 +344,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
         {memories.length > 0 && <button className="danger" disabled={busy} onClick={() => void deleteMemory("all")}>Delete all memory</button>}
       </section>
 
-      <section className="panel">
+      <section className="panel" id="device">
         <p className="eyebrow">ANDROID ACCESS</p>
         <h2>API tokens</h2>
         <p>Create a token, copy it once, then enter it and your Vercel URL in the Android app. Tokens are stored as hashes and cannot be viewed again.</p>
@@ -343,7 +367,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
         </div>
       </section>
 
-      {isAdmin && <section className="panel">
+      {isAdmin && <section className="panel" id="accounts">
         <p className="eyebrow">ADMINISTRATION</p>
         <h2>Accounts</h2>
         <div className="table-wrap"><table><thead><tr><th>Email</th><th>Joined</th><th>Role</th><th>Change role</th></tr></thead>
@@ -354,6 +378,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
       </section>}
 
       <p className="message" aria-live="polite">{message}</p>
-    </main>
+      </main>
+    </div>
   );
 }
