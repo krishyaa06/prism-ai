@@ -1,0 +1,12 @@
+<resources>
+    <style name="Theme.PhoneAgentAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#00D4FF</item>
+        <item name="colorPrimaryVariant">#0097B2</item>
+        <item name="colorOnPrimary">#0F0C29</item>
+        <item name="colorSecondary">#302B63</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:statusBarColor">#0F0C29</item>
+        <item name="android:navigationBarColor">#0F0C29</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

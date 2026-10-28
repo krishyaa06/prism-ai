@@ -1,0 +1,16 @@
+{
+  "name": "prism-agent-worker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/worker.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
