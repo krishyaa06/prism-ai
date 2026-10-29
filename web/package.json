@@ -16,7 +16,7 @@
     "next": "^16.4.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "undici": "^7.15.0",
+    "undici": "^8.12.3",
     "zod": "^4.1.5"
   },
   "devDependencies": {
