@@ -280,6 +280,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
           <Image className="brand-logo" src="/prism-logo.png" alt="" width={40} height={40} />
           <span>Prism<small>PHONE AGENT</small></span>
         </a>
+        <a className="new-task-link" href="/agent">+ <span>New agent task</span></a>
         <a className="new-task-link" href="#device">+ <span>New phone task</span></a>
         <p className="sidebar-label">WORKSPACE</p>
         <nav className="workspace-nav" aria-label="Workspace">
@@ -301,7 +302,7 @@ export function DashboardPanel({ email, isAdmin }: { email: string; isAdmin: boo
       <main className="dashboard">
       <header className="topbar">
         <div><p className="eyebrow">YOUR WORKSPACE</p><h1>Phone agent</h1></div>
-        <div className="account"><span className="connection-indicator"><span className="dot" />{modelConfigured ? "Model configured" : modelSetupMessage}</span><span>{isAdmin ? "ADMIN" : "ACCOUNT"}</span><ThemeToggle /></div>
+        <div className="account"><a className="primary" href="/agent" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none", whiteSpace: "nowrap" }} aria-label="Open Prism Agent workspace">Open Prism Agent <span aria-hidden="true">→</span></a><span className="connection-indicator"><span className="dot" />{modelConfigured ? "Model configured" : modelSetupMessage}</span><span>{isAdmin ? "ADMIN" : "ACCOUNT"}</span><ThemeToggle /></div>
       </header>
 
       <section className="panel" id="overview">

@@ -18,8 +18,9 @@ export default async function HomePage() {
       <section className="hero">
         <h1>Your AI.<br />Your tools.<br /><span>Your control.</span></h1>
         <p className="intro">
-          Connect your own model endpoint. Prism plans multi-step tasks in the cloud
-          and your Android device executes approved actions locally.
+          Connect your own model endpoint. Prism Agent in the web console plans multi-step
+          goals, searches the web, runs code in a sandbox, writes files and cites its sources,
+          asking before anything consequential. On Android, Prism executes approved phone actions locally.
         </p>
         <div className="notice">
           Cloud tasks send the screen context you approve to your configured Prism model endpoint.
