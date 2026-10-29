@@ -30,6 +30,6 @@ export type ChatMessage = { role: "user" | "assistant"; content: string };
 export type AgentRequest = {
   messages: ChatMessage[];
   artifacts?: Artifact[];
-  approvals?: { callId: string; approved: boolean }[];
+  approvals?: { callId: string; approved: boolean; tool?: string; args?: Record<string, unknown> }[];
   settings?: { memory?: boolean; subagents?: boolean; maxRounds?: number };
 };

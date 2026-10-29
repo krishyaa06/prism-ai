@@ -152,6 +152,53 @@ export async function listConnectorTools(userId: string) {
   return results.flatMap((result) => result.status === "fulfilled" ? result.value : []);
 }
 
+export type ConnectorToolDetail = {
+  connectorId: string;
+  connectorName: string;
+  toolName: string;
+  title: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+  annotations: { readOnlyHint?: boolean; destructiveHint?: boolean; openWorldHint?: boolean };
+};
+
+/** Number of trusted MCP servers in the deployment catalog (0 when unset or invalid). */
+export function countCatalogConnectors() {
+  try {
+    return getCatalog().length;
+  } catch {
+    return 0;
+  }
+}
+
+/** Lists the user's connected MCP tools with raw names and annotations (readOnlyHint etc.). */
+export async function listConnectorToolDetails(userId: string): Promise<ConnectorToolDetail[]> {
+  const catalog = await listAvailableConnectors(userId);
+  const connected = catalog.filter((entry) => entry.connected).slice(0, 16);
+  const results = await Promise.allSettled(connected.map(async (entry) => {
+    const { client } = await openConnector(userId, entry.id);
+    try {
+      const result = await client.listTools();
+      return result.tools.slice(0, 40).map((tool) => ({
+        connectorId: entry.id,
+        connectorName: entry.name,
+        toolName: tool.name,
+        title: tool.annotations?.title ?? tool.title ?? tool.name,
+        description: (tool.description ?? "").slice(0, 800),
+        inputSchema: tool.inputSchema as Record<string, unknown>,
+        annotations: {
+          readOnlyHint: tool.annotations?.readOnlyHint,
+          destructiveHint: tool.annotations?.destructiveHint,
+          openWorldHint: tool.annotations?.openWorldHint,
+        },
+      }));
+    } finally {
+      await client.close();
+    }
+  }));
+  return results.flatMap((result) => result.status === "fulfilled" ? result.value : []);
+}
+
 export async function callConnectorTool(
   userId: string,
   connectorId: string,
